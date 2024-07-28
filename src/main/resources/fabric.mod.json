@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "posview",
+  "version": "${version}",
+  "name": "PosView",
+  "description": "Display position/coordinates on the screen.",
+  "authors": ["interrrp"],
+  "contact": {
+    "sources": "https://github.com/interrrp/posview"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/posview/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["fun.ntrp.posview.PosView"]
+  },
+  "mixins": ["posview.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.21",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
