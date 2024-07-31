@@ -1,39 +1,32 @@
 package fun.ntrp.posview;
 
+import fun.ntrp.posview.config.IConfiguration;
+import fun.ntrp.posview.config.InMemoryConfiguration;
+import fun.ntrp.posview.position.IPositionProvider;
+import fun.ntrp.posview.position.MinecraftPositionProvider;
+import fun.ntrp.posview.text.MinecraftTextRenderer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Colors;
-import net.minecraft.util.math.Vec3d;
 
 public class PosView implements ModInitializer {
-	private static final int TEXT_POS_X = 16;
-	private static final int TEXT_POS_Y = 16;
+	private final IConfiguration configuration = new InMemoryConfiguration();
+	private final IPositionProvider positionProvider = new MinecraftPositionProvider();
+	private final MinecraftTextRenderer textRenderer = new MinecraftTextRenderer();
+	private final PositionRenderer positionRenderer = new PositionRenderer(
+			configuration, positionProvider, textRenderer);
+
+	public PosView() {
+		configuration.setInt("x", 16);
+		configuration.setInt("y", 16);
+		configuration.setInt("color", Colors.WHITE);
+	}
 
 	@Override
 	public void onInitialize() {
 		HudRenderCallback.EVENT.register((context, deltaTickManager) -> {
-			draw(context);
+			textRenderer.setDrawContext(context);
+			positionRenderer.drawPosition();
 		});
-	}
-
-	private static void draw(DrawContext context) {
-		MinecraftClient minecraft = MinecraftClient.getInstance();
-		PlayerEntity player = minecraft.player;
-		TextRenderer textRenderer = minecraft.textRenderer;
-
-		context.drawText(
-				textRenderer,
-				stringifyPos(player.getPos()),
-				TEXT_POS_X, TEXT_POS_Y,
-				Colors.WHITE,
-				/* Shadow */ true);
-	}
-
-	private static String stringifyPos(Vec3d pos) {
-		return String.format("%.1f %.1f %.1f", pos.x, pos.y, pos.z);
 	}
 }
