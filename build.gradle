@@ -1,6 +1,6 @@
 plugins {
-	id "fabric-loom" version "1.7-SNAPSHOT"
-	id "maven-publish"
+	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'maven-publish'
 }
 
 version = project.mod_version
@@ -12,6 +12,20 @@ base {
 
 repositories {
 	mavenCentral()
+
+	// YACL
+	maven {
+        name 'Xander Maven'
+        url 'https://maven.isxander.dev/releases'
+    }
+
+	// Mod Menu
+	repositories {
+		maven {
+			name = 'Terraformers'
+			url = 'https://maven.terraformersmc.com/'
+		}
+	}
 }
 
 dependencies {
@@ -23,17 +37,23 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
+	// YACL
+	modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+
+	// Mod Menu
+	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
+
 	// JUnit 5 and Mockito
-	testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.3"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.3"
-	testImplementation "org.mockito:mockito-junit-jupiter:5.12.0"
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
 }
 
 processResources {
-	inputs.property "version", project.version
+	inputs.property 'version', project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+	filesMatching('fabric.mod.json') {
+		expand 'version': project.version
 	}
 }
 
@@ -42,7 +62,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the 'build' task
 	// if it is present.
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
@@ -52,7 +72,7 @@ java {
 }
 
 jar {
-	from("LICENSE") {
+	from('LICENSE') {
 		rename { "${it}_${project.base.archivesName.get()}"}
 	}
 }
@@ -60,7 +80,7 @@ jar {
 // configure the maven publication
 publishing {
 	publications {
-		create("mavenJava", MavenPublication) {
+		create('mavenJava', MavenPublication) {
 			artifactId = project.archives_base_name
 			from components.java
 		}
